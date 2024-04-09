@@ -8,8 +8,13 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+    static user_and_issue_books_association;
     static associate(models) {
       // define association here
+      this.user_and_issue_books_association = User.hasMany(models.issue_books, {
+        foreignKey: "user_id",
+        as: "user_issued_books"
+      })
     }
   }
   User.init({
@@ -46,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
         this.setDataValue('password', hashedPassword);
       }
     },
-    isActive: {
+    is_active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     },

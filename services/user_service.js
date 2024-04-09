@@ -26,7 +26,7 @@ const login_user = async (payload) => {
     if (!existingUser) {
         throw new custom_error("User not exists!");
     }
-    if(!existingUser.isActive){
+    if(!existingUser.is_active){
         throw new custom_error("User status is not active. Contact Support Team.")
     }
     if (!existingUser || !(await utils.matchPassword(password, existingUser.password))) {

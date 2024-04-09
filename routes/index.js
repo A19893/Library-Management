@@ -6,5 +6,5 @@ router.get("/", (req, res, next) => {
     });
 });
 router.use("/users", require("./users_route"));
-
+router.use("/books", require('./books_route'))
 module.exports = router;

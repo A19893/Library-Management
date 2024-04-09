@@ -1,17 +1,22 @@
 'use strict';
 const { Model, Sequelize } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Book extends Model {
+  class issue_books extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+    static issue_books_and_user_association;
     static associate(models) {
       // define association here
+      this.issue_books_and_user_association = issue_books.belongsTo(models.user, {
+        foreignKey: "user_id",
+        as: "issued_books_of_user"
+      })
     }
   }
-  Book.init({
+  issue_books.init({
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -24,35 +29,26 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       defaultValue: Sequelize.literal("uuid_generate_v4()"),
     },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        len: [6,50]
+    user_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "users",
+        key: "id"
       }
     },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        len: [5,15]
+    book_id:{ 
+      type: DataTypes.INTEGER,
+      references: {
+        model: "books",
+        key: "id"
       }
-    },
-    is_available: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true
-    },
-    genre: {
-      type: DataTypes.ENUM('THRILLER','ACTION','FANTASY','TRAVEL'),
-      allowNull: false
     }
   }, {
     sequelize,
     createdAt: "created_at",
     updatedAt: "updated_at",
     deletedAt: "deleted_at",
-    modelName: 'book',
+    modelName: 'issue_books',
   });
-  return Book;
+  return issue_books;
 };

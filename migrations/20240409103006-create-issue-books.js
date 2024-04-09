@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('books', {
+    await queryInterface.createTable('issue_books', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,22 +15,19 @@ module.exports = {
         unique: true,
         defaultValue: Sequelize.literal("uuid_generate_v4()"),
       },
-      title: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      user_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "users",
+          key: "id"
+        }
       },
-      author: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      is_available: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
-      },
-      genre: {
-        type: Sequelize.ENUM('THRILLER', 'ACTION', 'FANTASY', 'TRAVEL'),
-        allowNull: false
+      book_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "books",
+          key: "id"
+        }
       },
       createdAt: {
         allowNull: false,
@@ -52,8 +49,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('books');
-
-    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_books_genre";');
+    await queryInterface.dropTable('issue_books');
   }
 };
