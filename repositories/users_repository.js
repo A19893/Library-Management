@@ -29,6 +29,25 @@ class users_repository extends base_repository {
       const user = await this.find_one(criteria);
       return user;
     }
+
+    async update_user(params, payload) {
+      const transaction = await sequelize.transaction();
+      const { user_id } = params;
+      try {
+        let options = {
+            transaction,
+        };
+        let criteria = {
+            uuid: user_id
+        }
+        const response = await this.update(criteria, payload, [], options);
+        await transaction.commit();
+        return response;
+    } catch (err) {
+        await transaction.rollback();
+        throw err;
+    }
+    }
 }
 
 module.exports = {

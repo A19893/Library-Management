@@ -39,6 +39,25 @@ class users_repository extends base_repository {
             throw err;
         }
     }
+
+    async update_book(params, payload) {
+        const transaction = await sequelize.transaction();
+        const { book_id } = params;
+        try {
+            let options = {
+                transaction,
+            };
+            let criteria = {
+                uuid: book_id
+            }
+            const response = await this.update(criteria, payload, [], options);
+            await transaction.commit();
+            return response;
+        } catch (err) {
+            await transaction.rollback();
+            throw err;
+        }
+    }
 }
 
 module.exports = {

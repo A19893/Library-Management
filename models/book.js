@@ -7,8 +7,13 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+    static book_and_issue_book_association;
     static associate(models) {
       // define association here
+      this.book_and_issue_book_association = Book.hasOne(models.issue_books, {
+        foreignKey: "book_id",
+        as: "issued_books"
+      })
     }
   }
   Book.init({

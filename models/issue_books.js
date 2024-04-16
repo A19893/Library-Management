@@ -8,11 +8,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static issue_books_and_user_association;
+    static issue_book_and_book_association;
     static associate(models) {
       // define association here
       this.issue_books_and_user_association = issue_books.belongsTo(models.user, {
         foreignKey: "user_id",
-        as: "issued_books_of_user"
+        as: "book_issued_to_user"
+      })
+      this.issue_book_and_book_association = issue_books.belongsTo(models.book, {
+        foreignKey: "book_id",
+        as: "book_issued"
       })
     }
   }

@@ -23,10 +23,7 @@ const login_user = async (req, res) => {
 
 const update_user_status = async (req, res) => {
   try {
-    const response = await user_service.update_user_status(
-      req.params.userId,
-      req.body
-    );
+    const response = await user_service.update_user_status(req.user,req.params);
     return res.status(200).json(response);
   } catch (error) {
     console.log("Error occured during updating a specific user status", error);

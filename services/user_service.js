@@ -36,19 +36,20 @@ const login_user = async (payload) => {
     return { ...existingUser.dataValues, token: token }
 };
 
-const update_user_status = async (userId, payload) => {
-    const user = await user_model.findById(userId);
-
-    if (!user) {
+const update_user_status = async (user, params) => {
+    const { user_id } = params;
+    const is_user = await users_repository_obj.find_user({email: user.email});
+    if(!is_user.isAdmin){
+        throw new custom_error("You are not authorized to do this operation", http_status_code.UNAUTHORIZED)
+    }
+    const user_to_update = await users_repository_obj.find_one({uuid: user_id});
+    if (!user_to_update) {
         throw new custom_error("User not exists!");
     }
-    const updated_user = await user_model.findByIdAndUpdate(
-        userId,
-        payload,
-        {
-            new: true,
-        }
-    );
+    const payload = {
+      is_active: true
+    }
+    const updated_user = await users_repository_obj.update_user(params, payload);
     return updated_user;
 }
 

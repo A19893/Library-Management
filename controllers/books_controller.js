@@ -13,7 +13,7 @@ const add_books = async (req, res) => {
 
 const remove_books = async (req, res) => {
   try {
-    const response = await books_service.remove_book(req.params);
+    const response = await books_service.remove_book(req.user,req.params);
     return res.status(200).json(response);
   } catch (error) {
     console.log("Error occured during login user", error);
@@ -33,10 +33,7 @@ const issue_books = async (req, res) => {
 
 const update_book_status = async (req, res) => {
   try {
-    const response = await user_service.update_user_status(
-      req.params.userId,
-      req.body
-    );
+    const response = await books_service.update_book_status(req.params,req.user);
     return res.status(200).json(response);
   } catch (error) {
     console.log("Error occured during updating a specific user status", error);
@@ -44,9 +41,21 @@ const update_book_status = async (req, res) => {
   }
 };
 
+const fetch_borrow_books = async (req, res) => {
+  const response = await books_service.get_borrowed_books();
+  return res.status(200).json(response);
+}
+
+const fetch_returned_books = async (req,res) => {
+  const response = await books_service.get_returned_books();
+  return res.status(200).json(response);
+}
+
 module.exports = {
   add_books,
   remove_books,
   update_book_status,
-  issue_books
+  issue_books,
+  fetch_borrow_books,
+  fetch_returned_books
 };
