@@ -23,7 +23,7 @@ const remove_books = async (req, res) => {
 
 const issue_books = async (req, res) => {
   try {
-    const response = await books_service.issue_book(req.user , req.body);
+    const response = await books_service.issue_book(req.user , req.params);
     return res.status(200).json(response);
   } catch (error) {
     console.log("Error occured during issuing books", error);
@@ -42,13 +42,58 @@ const update_book_status = async (req, res) => {
 };
 
 const fetch_borrow_books = async (req, res) => {
-  const response = await books_service.get_borrowed_books();
+  try{
+  const response = await books_service.get_borrowed_books(req.user);
   return res.status(200).json(response);
+  }
+  catch(error){
+    console.log("Error occured fetchign borrowed books", error);
+    handle_error(res,error)
+  }
 }
 
 const fetch_returned_books = async (req,res) => {
-  const response = await books_service.get_returned_books();
+  try{
+  const response = await books_service.get_returned_books(req.user);
   return res.status(200).json(response);
+  }
+  catch(error){
+    console.log("Error occured fetching returned books", error);
+    handle_error(res,error)
+  }
+}
+
+const fetch_books = async (req,res) => {
+  try{
+  const response = await books_service.fetch_books();
+  return res.status(200).json(response);
+  }
+  catch(error){
+      console.log("Error occured during fetching books", error);
+      handle_error(res,error)
+  }
+}
+
+const fetch_specific_books = async (req,res) => {
+  try{
+    const response = await books_service.fetch_specific_books(req.params);
+    return res.status(200).json(response);
+    }
+    catch(error){
+        console.log("Error occured during fetching specific book", error);
+        handle_error(res,error)
+    }
+}
+
+const return_book = async (req,res) => {
+try{
+  const response = await books_service.return_book(req.user, req.params);
+  return res.status(200).json(response);
+}
+catch(error){
+  console.log("Error occured while returning book", error);
+  handle_error(res,error)
+}
 }
 
 module.exports = {
@@ -57,5 +102,8 @@ module.exports = {
   update_book_status,
   issue_books,
   fetch_borrow_books,
-  fetch_returned_books
+  fetch_returned_books,
+  fetch_books,
+  fetch_specific_books,
+  return_book
 };

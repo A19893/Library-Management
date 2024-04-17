@@ -33,7 +33,7 @@ class issue_book_repository extends base_repository {
                 as: "book_issued"
             }
         ]
-      const response = await this.find_all(criteria, include);
+      const response = await this.find_all(criteria, include, false);
       return response;
     }
 }

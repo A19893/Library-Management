@@ -47,7 +47,7 @@ const update_user_status = async (user, params) => {
         throw new custom_error("User not exists!");
     }
     const payload = {
-      is_active: true
+      is_active: !user_to_update.is_active
     }
     const updated_user = await users_repository_obj.update_user(params, payload);
     return updated_user;

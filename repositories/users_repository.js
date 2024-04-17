@@ -40,9 +40,9 @@ class users_repository extends base_repository {
         let criteria = {
             uuid: user_id
         }
-        const response = await this.update(criteria, payload, [], options);
+        const [updated_count, updated_rows] = await this.update(criteria, payload, [], options);
         await transaction.commit();
-        return response;
+        return updated_rows;
     } catch (err) {
         await transaction.rollback();
         throw err;
