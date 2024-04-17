@@ -4,15 +4,29 @@ const { books_repository_obj } = require("../repositories/books_repository");
 const { issue_books_repository_obj } = require("../repositories/issue_book_repository");
 const { users_repository_obj } = require("../repositories/users_repository");
 const { Op } = require("sequelize")
+
 const add_book = async (payload) => {
     const { title, author, genre} = payload;
     const registered_user = await books_repository_obj.add_book({ title, author, genre})
     return registered_user;
 };
 
-const issue_book = async ( user, params) => {
-    const { book_id } = params;
-    const issued_books = await issue_books_repository_obj.issue_book({ user_id : user.id, book_id})
+const issue_book = async ( user, payload) => {
+    const is_user = await users_repository_obj.find_user({email: user.email});
+    if(!is_user.isAdmin){
+        throw new custom_error("You are not authorized to do this operation", http_status_code.UNAUTHORIZED)
+    }   
+    const { user_id, book_id } = payload;
+    const book_issued_to_user = await books_repository_obj.find_one({uuid: book_id});
+    const user_issuing_book_to = await users_repository_obj.find_one({uuid: user_id});
+    if(!book_issued_to_user || !user_issuing_book_to){
+        throw new custom_error("Bad request check the payload!", http_status_code.BAD_REQUEST)
+    }
+    const is_book_already_issued = await issue_books_repository_obj.find_one({book_id: book_issued_to_user.id})
+    if(is_book_already_issued){
+        throw new custom_error("Book is already issued to someone", http_status_code.CONFLICT);
+    }
+    const issued_books = await issue_books_repository_obj.issue_book({ user_id:user_issuing_book_to.id, book_id: book_issued_to_user.id})
     return issued_books;
 };
 

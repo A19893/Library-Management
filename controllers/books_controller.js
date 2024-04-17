@@ -23,7 +23,7 @@ const remove_books = async (req, res) => {
 
 const issue_books = async (req, res) => {
   try {
-    const response = await books_service.issue_book(req.user , req.params);
+    const response = await books_service.issue_book(req.user , req.body);
     return res.status(200).json(response);
   } catch (error) {
     console.log("Error occured during issuing books", error);
